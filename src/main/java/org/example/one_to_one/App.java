@@ -10,17 +10,16 @@ import java.util.Scanner;
 public class App {
     static Scanner scannerStr = new Scanner(System.in);
     static Scanner scannerInt = new Scanner(System.in);
+    static String divider = "===================================";
+    static String oops = "Oops... Enter correct option";
 
     public static void main(String[] args) {
-        String divider = "===================================", oops = "Oops... Enter correct option";
-
         SessionFactory factory = new Configuration()
                 .configure()
                 .addAnnotatedClass(Employee.class)
                 .addAnnotatedClass(EmployeeFullInfo.class)
                 .buildSessionFactory();
 
-        Session session = factory.getCurrentSession();
         int mainChoice, secondaryChoice;
 
         do {
@@ -34,10 +33,10 @@ public class App {
 
                     switch (secondaryChoice) {
                         case 1:
-                            AddEmployee(session);
+                            AddEmployee(factory);
                             break;
                         case 2:
-                            AddEmployeeFullInfo(session);
+                            AddEmployeeFullInfo(factory);
                             break;
                         case 3:
                             break;
@@ -45,6 +44,7 @@ public class App {
                             System.out.println(oops);
                             break;
                     }
+                    System.out.println(divider);
                     break;
                 case 2:
                     ShowReadMenu();
@@ -52,16 +52,17 @@ public class App {
 
                     switch (secondaryChoice) {
                         case 1:
-                            ShowEmployee(session);
+                            ShowEmployees(factory);
                             break;
                         case 2:
-                            ShowEmployeeFullInfo(session);
+                            ShowEmployeeFullInfo(factory);
                             break;
                         case 3:
                             break;
                         default:
                             System.out.println(oops);
                     }
+                    System.out.println(divider);
                     break;
                 case 3:
                     ShowUpdateMenu();
@@ -69,10 +70,10 @@ public class App {
 
                     switch (secondaryChoice) {
                         case 1:
-                            UpdateEmployee(session);
+                            UpdateEmployee(factory);
                             break;
                         case 2:
-                            UpdateEmployeeFullInfo(session);
+                            UpdateEmployeeFullInfo(factory);
                             break;
                         case 3:
                             break;
@@ -80,14 +81,17 @@ public class App {
                             System.out.println(oops);
                             break;
                     }
+                    System.out.println(divider);
                     break;
                 case 4:
-                    DeleteEmployee(session);
+                    DeleteEmployee(factory);
+                    System.out.println(divider);
                     break;
                 case 5:
                     break;
                 default:
                     System.out.println(oops);
+                    System.out.println(divider);
                     break;
             }
 
@@ -111,7 +115,7 @@ public class App {
     }
 
     private static void ShowReadMenu() {
-        System.out.println("[1] Show employee\n" +
+        System.out.println("[1] Show employees\n" +
                 "[2] Show employee full info by id\n" +
                 "[3] Exit\n\n" +
                 "Your choice -> ");
@@ -124,7 +128,9 @@ public class App {
                 "Your choice -> ");
     }
 
-    private static void AddEmployee(Session session) {
+    private static void AddEmployee(SessionFactory factory) {
+        Session session = factory.getCurrentSession();
+
         System.out.print("Enter employee last name: ");
         String lastName = scannerStr.nextLine();
 
@@ -147,7 +153,8 @@ public class App {
         session.getTransaction().commit();
     }
 
-    private static void AddEmployeeFullInfo(Session session) {
+    private static void AddEmployeeFullInfo(SessionFactory factory) {
+        Session session = factory.getCurrentSession();
         session.beginTransaction();
 
         List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
@@ -180,23 +187,163 @@ public class App {
         session.getTransaction().commit();
     }
 
-    private static void ShowEmployee(Session session) {
+    private static void ShowEmployees(SessionFactory factory) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
 
+        List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
+
+        session.getTransaction().commit();
+
+        employees.forEach(System.out::println);
     }
 
-    private static void ShowEmployeeFullInfo(Session session) {
+    private static void ShowEmployeeFullInfo(SessionFactory factory) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
 
+        List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
+
+        employees.forEach(System.out::println);
+
+        System.out.print("\nEnter employee id to show employee full info: ");
+        int employeeId = scannerInt.nextInt();
+        Employee employee = session.get(Employee.class, employeeId);
+
+        EmployeeFullInfo employeeFullInfo = employee.getEmployeeFullInfo();
+
+        System.out.println(employeeFullInfo);
+
+        session.getTransaction().commit();
     }
 
-    private static void UpdateEmployee(Session session) {
+    private static void UpdateEmployee(SessionFactory factory) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
 
+        List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
+        employees.forEach(System.out::println);
+
+        System.out.print("\nEnter employee id you want to update data: ");
+        int employeeId = scannerInt.nextInt();
+        Employee employee = session.get(Employee.class, employeeId);
+
+        System.out.print("\nUpdate employee's:" +
+                "\n[1] Last name" +
+                "\n[2] First name" +
+                "\n[3] Department" +
+                "\n[4] Salary" +
+                "\n[5] Phone number" +
+                "\n[6] Exit" +
+                "\n\nYour choice: ");
+
+        int choice = scannerInt.nextInt();
+
+        switch (choice) {
+            case 1:
+                System.out.print("\nEnter new last name: ");
+                String newLastName = scannerStr.next();
+                employee.setLastName(newLastName);
+                break;
+            case 2:
+                System.out.print("\nEnter new first name: ");
+                String newFirstName = scannerStr.next();
+                employee.setFirstName(newFirstName);
+                break;
+            case 3:
+                System.out.print("\nEnter new department: ");
+                String newDepartment = scannerStr.next();
+                employee.setDepartment(newDepartment);
+                break;
+            case 4:
+                System.out.print("\nEnter new salary: ");
+                int newSalary = scannerInt.nextInt();
+                employee.setSalary(newSalary);
+                break;
+            case 5:
+                System.out.print("\nEnter new phone number: ");
+                String newPhoneNumber = scannerStr.next();
+                employee.setPhoneNumber(newPhoneNumber);
+                break;
+            case 6:
+                break;
+            default:
+                System.out.println(oops);
+                System.out.println(divider);
+                break;
+        }
+
+        session.getTransaction().commit();
     }
 
-    private static void UpdateEmployeeFullInfo(Session session) {
+    private static void UpdateEmployeeFullInfo(SessionFactory factory) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
 
+        List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
+        employees.forEach(System.out::println);
+
+        System.out.print("\nEnter employee id you want to update full info data: ");
+        int employeeId = scannerInt.nextInt();
+        Employee employee = session.get(Employee.class, employeeId);
+        EmployeeFullInfo employeeFullInfo = employee.getEmployeeFullInfo();
+
+        System.out.print("\nUpdate employee's:" +
+                "\n[1] Email" +
+                "\n[2] Country" +
+                "\n[3] City" +
+                "\n[4] Married status" +
+                "\n[5] Exit" +
+                "\n\nYour choice: ");
+
+        int choice = scannerInt.nextInt();
+
+        switch (choice) {
+            case 1:
+                System.out.print("\nEnter new email: ");
+                String newEmail = scannerStr.next();
+                employeeFullInfo.setEmail(newEmail);
+                break;
+            case 2:
+                System.out.print("\nEnter new country: ");
+                String newCountry = scannerStr.next();
+                employeeFullInfo.setCountry(newCountry);
+                break;
+            case 3:
+                System.out.print("\nEnter new city: ");
+                String newCity = scannerStr.next();
+                employeeFullInfo.setCity(newCity);
+                break;
+            case 4:
+                Boolean boo = employeeFullInfo.isMarried();
+                employeeFullInfo.setMarried(!boo);
+                break;
+            case 5:
+                break;
+            default:
+                System.out.println(oops);
+                System.out.println(divider);
+                break;
+        }
+
+        session.getTransaction().commit();
     }
 
-    private static void DeleteEmployee(Session session) {
+    private static void DeleteEmployee(SessionFactory factory) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
 
+        List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
+        employees.forEach(System.out::println);
+
+        System.out.print("\nEnter employee id you want to delete: ");
+        int employeeId = scannerInt.nextInt();
+
+        Employee employee = session.get(Employee.class, employeeId);
+        EmployeeFullInfo employeeFullInfo = employee.getEmployeeFullInfo();
+
+        session.delete(employeeFullInfo);
+        session.delete(employee);
+        session.getTransaction().commit();
     }
 }

@@ -3,7 +3,7 @@ package org.example.one_to_one;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "employee_full_info")
+@Table(name = "employees_full_info")
 public class EmployeeFullInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,7 +85,6 @@ public class EmployeeFullInfo {
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
                 ", married=" + married +
-                ", employee=" + employee +
                 '}';
     }
 }
