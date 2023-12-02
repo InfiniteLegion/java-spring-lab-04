@@ -3,8 +3,8 @@ package org.example.one_to_one;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "employees_full_info")
-public class EmployeeFullInfo {
+@Table(name = "employees_additional_info")
+public class EmployeeAdditionalInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -17,12 +17,12 @@ public class EmployeeFullInfo {
     private String city;
     @Column(name = "married")
     private boolean married;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "employeeFullInfo")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "employeeAdditionalInfo")
     private Employee employee;
 
-    public EmployeeFullInfo() {}
+    public EmployeeAdditionalInfo() {}
 
-    public EmployeeFullInfo(String email, String country, String city, boolean married) {
+    public EmployeeAdditionalInfo(String email, String country, String city, boolean married) {
         this.email = email;
         this.country = country;
         this.city = city;

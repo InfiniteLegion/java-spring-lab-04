@@ -20,8 +20,8 @@ public class Employee {
     @Column(name = "phone_number")
     private String phoneNumber;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "full_info_id")
-    private EmployeeFullInfo employeeFullInfo;
+    @JoinColumn(name = "additional_info_id")
+    private EmployeeAdditionalInfo employeeAdditionalInfo;
 
     public Employee() {}
 
@@ -81,12 +81,12 @@ public class Employee {
         this.phoneNumber = phoneNumber;
     }
 
-    public EmployeeFullInfo getEmployeeFullInfo() {
-        return employeeFullInfo;
+    public EmployeeAdditionalInfo getEmployeeFullInfo() {
+        return employeeAdditionalInfo;
     }
 
-    public void setEmployeeFullInfo(EmployeeFullInfo employeeFullInfo) {
-        this.employeeFullInfo = employeeFullInfo;
+    public void setEmployeeFullInfo(EmployeeAdditionalInfo employeeAdditionalInfo) {
+        this.employeeAdditionalInfo = employeeAdditionalInfo;
     }
 
     @Override

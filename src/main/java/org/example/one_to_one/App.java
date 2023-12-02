@@ -15,9 +15,9 @@ public class App {
 
     public static void main(String[] args) {
         SessionFactory factory = new Configuration()
-                .configure()
+                .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Employee.class)
-                .addAnnotatedClass(EmployeeFullInfo.class)
+                .addAnnotatedClass(EmployeeAdditionalInfo.class)
                 .buildSessionFactory();
 
         int mainChoice, secondaryChoice;
@@ -36,7 +36,7 @@ public class App {
                             AddEmployee(factory);
                             break;
                         case 2:
-                            AddEmployeeFullInfo(factory);
+                            AddEmployeeAdditionalInfo(factory);
                             break;
                         case 3:
                             break;
@@ -55,7 +55,7 @@ public class App {
                             ShowEmployees(factory);
                             break;
                         case 2:
-                            ShowEmployeeFullInfo(factory);
+                            ShowEmployeeAdditionalInfo(factory);
                             break;
                         case 3:
                             break;
@@ -73,7 +73,7 @@ public class App {
                             UpdateEmployee(factory);
                             break;
                         case 2:
-                            UpdateEmployeeFullInfo(factory);
+                            UpdateEmployeeAdditionalInfo(factory);
                             break;
                         case 3:
                             break;
@@ -108,22 +108,22 @@ public class App {
     }
 
     private static void ShowAddMenu() {
-        System.out.println("[1] Add employee\n" +
-                "[2] Add employee full info\n" +
+        System.out.print("[1] Add employee\n" +
+                "[2] Add employee additional info\n" +
                 "[3] Exit\n\n" +
                 "Your choice -> ");
     }
 
     private static void ShowReadMenu() {
-        System.out.println("[1] Show employees\n" +
-                "[2] Show employee full info by id\n" +
+        System.out.print("[1] Show employees\n" +
+                "[2] Show employee additional info\n" +
                 "[3] Exit\n\n" +
                 "Your choice -> ");
     }
 
     private static void ShowUpdateMenu() {
-        System.out.println("[1] Update employee\n" +
-                "[2] Update employee full info by id\n" +
+        System.out.print("[1] Update employee\n" +
+                "[2] Update employee additional info\n" +
                 "[3] Exit\n\n" +
                 "Your choice -> ");
     }
@@ -153,7 +153,7 @@ public class App {
         session.getTransaction().commit();
     }
 
-    private static void AddEmployeeFullInfo(SessionFactory factory) {
+    private static void AddEmployeeAdditionalInfo(SessionFactory factory) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
 
@@ -178,12 +178,12 @@ public class App {
         String isMarriedStr = scannerStr.next().toLowerCase();
         Boolean isMarried = isMarriedStr.equals("y");
 
-        EmployeeFullInfo employeeFullInfo = new EmployeeFullInfo(email, country, city, isMarried);
+        EmployeeAdditionalInfo employeeAdditionalInfo = new EmployeeAdditionalInfo(email, country, city, isMarried);
 
-        employee.setEmployeeFullInfo(employeeFullInfo);
-        employeeFullInfo.setEmployee(employee);
+        employee.setEmployeeFullInfo(employeeAdditionalInfo);
+        employeeAdditionalInfo.setEmployee(employee);
 
-        session.save(employeeFullInfo);
+        session.save(employeeAdditionalInfo);
         session.getTransaction().commit();
     }
 
@@ -198,7 +198,7 @@ public class App {
         employees.forEach(System.out::println);
     }
 
-    private static void ShowEmployeeFullInfo(SessionFactory factory) {
+    private static void ShowEmployeeAdditionalInfo(SessionFactory factory) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
 
@@ -210,9 +210,9 @@ public class App {
         int employeeId = scannerInt.nextInt();
         Employee employee = session.get(Employee.class, employeeId);
 
-        EmployeeFullInfo employeeFullInfo = employee.getEmployeeFullInfo();
+        EmployeeAdditionalInfo employeeAdditionalInfo = employee.getEmployeeFullInfo();
 
-        System.out.println(employeeFullInfo);
+        System.out.println(employeeAdditionalInfo);
 
         session.getTransaction().commit();
     }
@@ -276,17 +276,17 @@ public class App {
         session.getTransaction().commit();
     }
 
-    private static void UpdateEmployeeFullInfo(SessionFactory factory) {
+    private static void UpdateEmployeeAdditionalInfo(SessionFactory factory) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
 
         List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
         employees.forEach(System.out::println);
 
-        System.out.print("\nEnter employee id you want to update full info data: ");
+        System.out.print("\nEnter employee id you want to update additional info data: ");
         int employeeId = scannerInt.nextInt();
         Employee employee = session.get(Employee.class, employeeId);
-        EmployeeFullInfo employeeFullInfo = employee.getEmployeeFullInfo();
+        EmployeeAdditionalInfo employeeAdditionalInfo = employee.getEmployeeFullInfo();
 
         System.out.print("\nUpdate employee's:" +
                 "\n[1] Email" +
@@ -302,21 +302,21 @@ public class App {
             case 1:
                 System.out.print("\nEnter new email: ");
                 String newEmail = scannerStr.next();
-                employeeFullInfo.setEmail(newEmail);
+                employeeAdditionalInfo.setEmail(newEmail);
                 break;
             case 2:
                 System.out.print("\nEnter new country: ");
                 String newCountry = scannerStr.next();
-                employeeFullInfo.setCountry(newCountry);
+                employeeAdditionalInfo.setCountry(newCountry);
                 break;
             case 3:
                 System.out.print("\nEnter new city: ");
                 String newCity = scannerStr.next();
-                employeeFullInfo.setCity(newCity);
+                employeeAdditionalInfo.setCity(newCity);
                 break;
             case 4:
-                Boolean boo = employeeFullInfo.isMarried();
-                employeeFullInfo.setMarried(!boo);
+                Boolean boo = employeeAdditionalInfo.isMarried();
+                employeeAdditionalInfo.setMarried(!boo);
                 break;
             case 5:
                 break;
@@ -340,9 +340,9 @@ public class App {
         int employeeId = scannerInt.nextInt();
 
         Employee employee = session.get(Employee.class, employeeId);
-        EmployeeFullInfo employeeFullInfo = employee.getEmployeeFullInfo();
+        EmployeeAdditionalInfo employeeAdditionalInfo = employee.getEmployeeFullInfo();
 
-        session.delete(employeeFullInfo);
+        session.delete(employeeAdditionalInfo);
         session.delete(employee);
         session.getTransaction().commit();
     }
